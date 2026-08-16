@@ -86,6 +86,14 @@ def test_identity_merge_and_reconciliation():
     assert len(audit_data["events"]) == 2
     assert audit_data["incident"]["severity"] == "high"  # High severity won
 
+    # Verify identity_resolution evidence in reconciliation event
+    reconcile_evt = audit_data["events"][1]
+    identity_ev = reconcile_evt["decision_logic"]["identity_resolution"]
+    assert identity_ev["matched_report_id"] == "mobile-001"
+    assert "confidence_level" in identity_ev
+    assert "ambiguous" in identity_ev
+
+
 
 def test_late_report_processing():
     fixtures = load_fixtures()

@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any
-from app.identity import is_overlapping
+from app.identity import is_overlapping, evaluate_overlap
 from app.reconciliation import reconcile_state
 
 
@@ -45,14 +45,14 @@ def replay_reports(reports: List[Dict[str, Any]]) -> Dict[str, Any]:
 
         # Identity resolution: Check if report overlaps with ANY report in existing incidents
         matched_incident_id = None
+        identity_evidence = None
+
         for inc_id, inc in incidents_map.items():
             for existing_rep in inc["reports"]:
-                ex_lat = float(existing_rep["location"]["lat"])
-                ex_lng = float(existing_rep["location"]["lng"])
-                ex_time = parse_datetime(existing_rep["timestamp"])
-
-                if is_overlapping(report_lat, report_lng, report_time, ex_lat, ex_lng, ex_time):
+                is_match, evidence = evaluate_overlap(report_lat, report_lng, report_time, existing_rep)
+                if is_match:
                     matched_incident_id = inc_id
+                    identity_evidence = evidence
                     break
             if matched_incident_id:
                 break
@@ -92,7 +92,7 @@ def replay_reports(reports: List[Dict[str, Any]]) -> Dict[str, Any]:
                 "input_data": report,
                 "decision_logic": {
                     "action": "new_incident_created",
-                    "reason": "No overlapping incident found within 500m / 1h window",
+                    "reason": "No overlapping incident report found within 500m / 1h window",
                 },
                 "resulting_state": initial_state,
                 "created_at": report_time_iso,
@@ -106,6 +106,8 @@ def replay_reports(reports: List[Dict[str, Any]]) -> Dict[str, Any]:
 
             current_state = inc["state"]
             new_state, decisions = reconcile_state(current_state, report)
+            if identity_evidence:
+                decisions["identity_resolution"] = identity_evidence
 
             new_version = inc["current_version"] + 1
             inc["current_version"] = new_version

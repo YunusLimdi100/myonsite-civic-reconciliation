@@ -1,16 +1,16 @@
 {
   "final_state": {
-    "a1b2c3d4-0000-4000-8000-000000000001": {
-      "id": "a1b2c3d4-0000-4000-8000-000000000001",
+    "5d645802-38d6-4b7b-be68-056679222b6a": {
+      "id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "current_version": 4,
       "latitude": 23.0301,
       "longitude": 72.5802,
       "severity": "high",
-      "responsible_party": "Municipality",
+      "responsible_party": "Contractor-A",
       "responsible_party_source": "mobile"
     },
-    "b2c3d4e5-0000-4000-8000-000000000002": {
-      "id": "b2c3d4e5-0000-4000-8000-000000000002",
+    "3c32e01b-7cda-4211-ac2e-361b0f56c047": {
+      "id": "3c32e01b-7cda-4211-ac2e-361b0f56c047",
       "current_version": 1,
       "latitude": 23.05,
       "longitude": 72.6,
@@ -18,8 +18,8 @@
       "responsible_party": "Water-Dept",
       "responsible_party_source": "partner"
     },
-    "c3d4e5f6-0000-4000-8000-000000000003": {
-      "id": "c3d4e5f6-0000-4000-8000-000000000003",
+    "63354f52-669f-4d17-89cc-e7b4d293570a": {
+      "id": "63354f52-669f-4d17-89cc-e7b4d293570a",
       "current_version": 1,
       "latitude": 23.0301,
       "longitude": 72.5802,
@@ -30,7 +30,7 @@
   },
   "versions": [
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "version": 1,
       "state": {
         "latitude": 23.0301,
@@ -42,7 +42,7 @@
       "created_at": "2026-08-16T17:00:00+00:00"
     },
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "version": 2,
       "state": {
         "latitude": 23.0301,
@@ -54,7 +54,7 @@
       "created_at": "2026-08-16T17:20:00+00:00"
     },
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "version": 3,
       "state": {
         "latitude": 23.0301,
@@ -66,19 +66,19 @@
       "created_at": "2026-08-16T17:40:00+00:00"
     },
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "version": 4,
       "state": {
         "latitude": 23.0301,
         "longitude": 72.5802,
         "severity": "high",
-        "responsible_party": "Municipality",
+        "responsible_party": "Contractor-A",
         "responsible_party_source": "mobile"
       },
       "created_at": "2026-08-16T17:30:00+00:00"
     },
     {
-      "incident_id": "b2c3d4e5-0000-4000-8000-000000000002",
+      "incident_id": "3c32e01b-7cda-4211-ac2e-361b0f56c047",
       "version": 1,
       "state": {
         "latitude": 23.05,
@@ -90,7 +90,7 @@
       "created_at": "2026-08-16T17:00:00+00:00"
     },
     {
-      "incident_id": "c3d4e5f6-0000-4000-8000-000000000003",
+      "incident_id": "63354f52-669f-4d17-89cc-e7b4d293570a",
       "version": 1,
       "state": {
         "latitude": 23.0301,
@@ -104,12 +104,11 @@
   ],
   "decision_trace": [
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "report_id": "mobile-001",
       "source": "mobile",
       "event_type": "incident_created",
       "input_data": {
-        "report_id": "mobile-001",
         "source": "mobile",
         "location": {
           "lat": 23.0301,
@@ -117,7 +116,13 @@
         },
         "severity": "low",
         "responsible_party": "Contractor-A",
-        "timestamp": "2026-08-16T17:00:00Z"
+        "timestamp": "2026-08-16T17:00:00Z",
+        "description": "Pothole reported on main road",
+        "metadata": {
+          "reporter": "citizen-1"
+        },
+        "report_id": "mobile-001",
+        "is_duplicate": false
       },
       "decision_logic": {
         "action": "new_incident_created",
@@ -133,12 +138,11 @@
       "created_at": "2026-08-16T17:00:00+00:00"
     },
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "report_id": "email-001",
       "source": "email",
       "event_type": "reconciliation",
       "input_data": {
-        "report_id": "email-001",
         "source": "email",
         "location": {
           "lat": 23.0315,
@@ -146,7 +150,11 @@
         },
         "severity": "high",
         "responsible_party": "Contractor-B",
-        "timestamp": "2026-08-16T17:20:00Z"
+        "timestamp": "2026-08-16T17:20:00Z",
+        "description": "Severe pothole causing traffic obstruction",
+        "metadata": {},
+        "report_id": "email-001",
+        "is_duplicate": false
       },
       "decision_logic": {
         "severity": {
@@ -161,6 +169,15 @@
           "selected": "Contractor-A",
           "selected_source": "mobile",
           "reason": "Current source (mobile) has higher reliability"
+        },
+        "identity_resolution": {
+          "matched_report_id": "mobile-001",
+          "distance_meters": 175.89,
+          "time_difference_seconds": 1200.0,
+          "distance_threshold_meters": 500.0,
+          "time_threshold_seconds": 3600.0,
+          "confidence_level": "MEDIUM",
+          "ambiguous": false
         }
       },
       "resulting_state": {
@@ -173,12 +190,11 @@
       "created_at": "2026-08-16T17:20:00+00:00"
     },
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "report_id": "partner-001",
       "source": "partner",
       "event_type": "reconciliation",
       "input_data": {
-        "report_id": "partner-001",
         "source": "partner",
         "location": {
           "lat": 23.0305,
@@ -186,7 +202,13 @@
         },
         "severity": "medium",
         "responsible_party": "Partner-Agency",
-        "timestamp": "2026-08-16T17:40:00Z"
+        "timestamp": "2026-08-16T17:40:00Z",
+        "description": "Routine maintenance ticket for pothole",
+        "metadata": {
+          "ticket_ref": "PART-9988"
+        },
+        "report_id": "partner-001",
+        "is_duplicate": false
       },
       "decision_logic": {
         "severity": {
@@ -201,6 +223,15 @@
           "selected": "Contractor-A",
           "selected_source": "mobile",
           "reason": "Current source (mobile) has higher reliability"
+        },
+        "identity_resolution": {
+          "matched_report_id": "mobile-001",
+          "distance_meters": 54.04,
+          "time_difference_seconds": 2400.0,
+          "distance_threshold_meters": 500.0,
+          "time_threshold_seconds": 3600.0,
+          "confidence_level": "LOW",
+          "ambiguous": true
         }
       },
       "resulting_state": {
@@ -213,12 +244,11 @@
       "created_at": "2026-08-16T17:40:00+00:00"
     },
     {
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "incident_id": "5d645802-38d6-4b7b-be68-056679222b6a",
       "report_id": "mobile-002",
       "source": "mobile",
       "event_type": "reconciliation",
       "input_data": {
-        "report_id": "mobile-002",
         "source": "mobile",
         "location": {
           "lat": 23.0302,
@@ -226,7 +256,11 @@
         },
         "severity": "medium",
         "responsible_party": "Municipality",
-        "timestamp": "2026-08-16T17:30:00Z"
+        "timestamp": "2026-08-16T17:30:00Z",
+        "description": "Late arriving report for pothole",
+        "metadata": {},
+        "report_id": "mobile-002",
+        "is_duplicate": false
       },
       "decision_logic": {
         "severity": {
@@ -238,27 +272,35 @@
         "responsible_party": {
           "previous": "Contractor-A",
           "incoming": "Municipality",
-          "selected": "Municipality",
+          "selected": "Contractor-A",
           "selected_source": "mobile",
-          "reason": "Mobile source has higher reliability"
+          "reason": "Equal source reliability; retaining current responsible party"
+        },
+        "identity_resolution": {
+          "matched_report_id": "mobile-001",
+          "distance_meters": 15.11,
+          "time_difference_seconds": 1800.0,
+          "distance_threshold_meters": 500.0,
+          "time_threshold_seconds": 3600.0,
+          "confidence_level": "MEDIUM",
+          "ambiguous": false
         }
       },
       "resulting_state": {
         "latitude": 23.0301,
         "longitude": 72.5802,
         "severity": "high",
-        "responsible_party": "Municipality",
+        "responsible_party": "Contractor-A",
         "responsible_party_source": "mobile"
       },
       "created_at": "2026-08-16T17:30:00+00:00"
     },
     {
-      "incident_id": "b2c3d4e5-0000-4000-8000-000000000002",
+      "incident_id": "3c32e01b-7cda-4211-ac2e-361b0f56c047",
       "report_id": "partner-002",
       "source": "partner",
       "event_type": "incident_created",
       "input_data": {
-        "report_id": "partner-002",
         "source": "partner",
         "location": {
           "lat": 23.05,
@@ -266,7 +308,11 @@
         },
         "severity": "low",
         "responsible_party": "Water-Dept",
-        "timestamp": "2026-08-16T17:00:00Z"
+        "timestamp": "2026-08-16T17:00:00Z",
+        "description": "Distant water leakage report outside 500m boundary",
+        "metadata": {},
+        "report_id": "partner-002",
+        "is_duplicate": false
       },
       "decision_logic": {
         "action": "new_incident_created",
@@ -282,12 +328,11 @@
       "created_at": "2026-08-16T17:00:00+00:00"
     },
     {
-      "incident_id": "c3d4e5f6-0000-4000-8000-000000000003",
+      "incident_id": "63354f52-669f-4d17-89cc-e7b4d293570a",
       "report_id": "email-002",
       "source": "email",
       "event_type": "incident_created",
       "input_data": {
-        "report_id": "email-002",
         "source": "email",
         "location": {
           "lat": 23.0301,
@@ -295,7 +340,11 @@
         },
         "severity": "high",
         "responsible_party": "Roads-Dept",
-        "timestamp": "2026-08-16T19:30:00Z"
+        "timestamp": "2026-08-16T19:30:00Z",
+        "description": "New report at same location but 2.5 hours later outside 1 hour boundary",
+        "metadata": {},
+        "report_id": "email-002",
+        "is_duplicate": false
       },
       "decision_logic": {
         "action": "new_incident_created",

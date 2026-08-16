@@ -6,8 +6,17 @@
   "decision": {
     "previous": "Contractor-A",
     "incoming": "Municipality",
-    "selected": "Municipality",
+    "selected": "Contractor-A",
     "selected_source": "mobile",
-    "reason": "Mobile source has higher reliability"
+    "reason": "Equal source reliability; retaining current responsible party"
+  },
+  "identity_resolution": {
+    "matched_report_id": "mobile-001",
+    "distance_meters": 15.11,
+    "time_difference_seconds": 1800.0,
+    "distance_threshold_meters": 500.0,
+    "time_threshold_seconds": 3600.0,
+    "confidence_level": "MEDIUM",
+    "ambiguous": false
   }
 }

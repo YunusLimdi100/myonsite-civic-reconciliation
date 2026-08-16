@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional, List
 from app.database import get_supabase_client
-from app.identity import is_overlapping
+from app.identity import evaluate_overlap
 from app.reconciliation import reconcile_state
 
 
@@ -66,22 +66,20 @@ def ingest_report(report: Dict[str, Any]) -> Dict[str, Any]:
             }
 
         # --- 2. Identity resolution via Supabase ---
-        # Fetch all existing incidents and all associated incident reports
         all_incidents = client.table("incidents").select("*").execute().data or []
         all_reports = client.table("incident_reports").select("*").execute().data or []
 
         matched_incident = None
+        identity_evidence = None
+
         for inc in all_incidents:
             inc_id = inc["id"]
-            # Retrieve associated reports for this incident
             associated_reports = [r for r in all_reports if r["incident_id"] == inc_id]
             for ex_rep in associated_reports:
-                ex_lat = float(ex_rep["latitude"])
-                ex_lng = float(ex_rep["longitude"])
-                ex_time = parse_datetime(ex_rep["timestamp"])
-
-                if is_overlapping(report_lat, report_lng, report_time, ex_lat, ex_lng, ex_time):
+                is_match, evidence = evaluate_overlap(report_lat, report_lng, report_time, ex_rep)
+                if is_match:
                     matched_incident = inc
+                    identity_evidence = evidence
                     break
             if matched_incident:
                 break
@@ -172,6 +170,9 @@ def ingest_report(report: Dict[str, Any]) -> Dict[str, Any]:
             }
 
             new_state, decisions = reconcile_state(current_state, report)
+            if identity_evidence:
+                decisions["identity_resolution"] = identity_evidence
+
             new_version = current_version + 1
 
             client.table("incidents").update(
@@ -243,15 +244,15 @@ def ingest_report(report: Dict[str, Any]) -> Dict[str, Any]:
 
         # 2. Identity resolution against all associated incident reports
         matched_inc = None
+        identity_evidence = None
+
         for inc_id, inc in in_memory_db.incidents.items():
             inc_reports = [r for r in in_memory_db.reports if r["incident_id"] == inc_id]
             for ex_rep in inc_reports:
-                ex_lat = float(ex_rep["latitude"])
-                ex_lng = float(ex_rep["longitude"])
-                ex_time = parse_datetime(ex_rep["timestamp"])
-
-                if is_overlapping(report_lat, report_lng, report_time, ex_lat, ex_lng, ex_time):
+                is_match, evidence = evaluate_overlap(report_lat, report_lng, report_time, ex_rep)
+                if is_match:
                     matched_inc = inc
+                    identity_evidence = evidence
                     break
             if matched_inc:
                 break
@@ -337,6 +338,9 @@ def ingest_report(report: Dict[str, Any]) -> Dict[str, Any]:
             }
 
             new_state, decisions = reconcile_state(current_state, report)
+            if identity_evidence:
+                decisions["identity_resolution"] = identity_evidence
+
             new_version = current_version + 1
 
             matched_inc["current_version"] = new_version
@@ -425,4 +429,3 @@ def get_incident_audit(incident_id: str) -> Optional[Dict[str, Any]]:
             "incident": incident,
             "events": events,
         }
-

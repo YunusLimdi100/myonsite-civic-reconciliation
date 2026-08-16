@@ -8,5 +8,14 @@
     "incoming": "high",
     "selected": "high",
     "reason": "Highest severity wins"
+  },
+  "identity_resolution": {
+    "matched_report_id": "mobile-001",
+    "distance_meters": 175.89,
+    "time_difference_seconds": 1200.0,
+    "distance_threshold_meters": 500.0,
+    "time_threshold_seconds": 3600.0,
+    "confidence_level": "MEDIUM",
+    "ambiguous": false
   }
 }

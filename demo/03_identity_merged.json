@@ -1,5 +1,5 @@
 {
-  "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+  "incident_id": "a34d6809-63f1-4d01-b5ff-9c3762a3c093",
   "report_id": "email-001",
   "status": "reconciled",
   "version": 2,
@@ -16,6 +16,15 @@
       "selected": "Contractor-A",
       "selected_source": "mobile",
       "reason": "Current source (mobile) has higher reliability"
+    },
+    "identity_resolution": {
+      "matched_report_id": "mobile-001",
+      "distance_meters": 175.89,
+      "time_difference_seconds": 1200.0,
+      "distance_threshold_meters": 500.0,
+      "time_threshold_seconds": 3600.0,
+      "confidence_level": "MEDIUM",
+      "ambiguous": false
     }
   }
 }

@@ -1,24 +1,23 @@
 {
   "incident": {
-    "id": "a1b2c3d4-0000-4000-8000-000000000001",
-    "current_version": 3,
+    "id": "a34d6809-63f1-4d01-b5ff-9c3762a3c093",
+    "current_version": 4,
     "latitude": 23.0301,
     "longitude": 72.5802,
     "severity": "high",
-    "responsible_party": "Municipality",
+    "responsible_party": "Contractor-A",
     "responsible_party_source": "mobile",
     "created_at": "2026-08-16T17:00:00+00:00",
-    "updated_at": "2026-08-16T17:30:00+00:00"
+    "updated_at": "2026-08-16T13:17:44.998740+00:00"
   },
   "events": [
     {
-      "id": "e1-001",
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "id": "515e5016-d10c-457e-af68-b9f3155341ac",
+      "incident_id": "a34d6809-63f1-4d01-b5ff-9c3762a3c093",
       "report_id": "mobile-001",
       "source": "mobile",
       "event_type": "incident_created",
       "input_data": {
-        "report_id": "mobile-001",
         "source": "mobile",
         "location": {
           "lat": 23.0301,
@@ -27,7 +26,12 @@
         "severity": "low",
         "responsible_party": "Contractor-A",
         "timestamp": "2026-08-16T17:00:00Z",
-        "description": "Pothole reported on main road"
+        "description": "Pothole reported on main road",
+        "metadata": {
+          "reporter": "citizen-1"
+        },
+        "report_id": "mobile-001",
+        "is_duplicate": false
       },
       "decision_logic": {
         "action": "new_incident_created",
@@ -43,22 +47,24 @@
       "created_at": "2026-08-16T17:00:00+00:00"
     },
     {
-      "id": "e1-002",
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "id": "dd179df9-dbcf-4da6-9b14-6d0bab52b257",
+      "incident_id": "a34d6809-63f1-4d01-b5ff-9c3762a3c093",
       "report_id": "email-001",
       "source": "email",
       "event_type": "reconciliation",
       "input_data": {
-        "report_id": "email-001",
         "source": "email",
         "location": {
           "lat": 23.0315,
-          "lng": 72.5810
+          "lng": 72.581
         },
         "severity": "high",
         "responsible_party": "Contractor-B",
         "timestamp": "2026-08-16T17:20:00Z",
-        "description": "Severe pothole causing traffic obstruction"
+        "description": "Severe pothole causing traffic obstruction",
+        "metadata": {},
+        "report_id": "email-001",
+        "is_duplicate": false
       },
       "decision_logic": {
         "severity": {
@@ -73,6 +79,15 @@
           "selected": "Contractor-A",
           "selected_source": "mobile",
           "reason": "Current source (mobile) has higher reliability"
+        },
+        "identity_resolution": {
+          "matched_report_id": "mobile-001",
+          "distance_meters": 175.89,
+          "time_difference_seconds": 1200.0,
+          "distance_threshold_meters": 500.0,
+          "time_threshold_seconds": 3600.0,
+          "confidence_level": "MEDIUM",
+          "ambiguous": false
         }
       },
       "resulting_state": {
@@ -85,13 +100,67 @@
       "created_at": "2026-08-16T17:20:00+00:00"
     },
     {
-      "id": "e1-003",
-      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "id": "d8f3931e-7757-40e1-9f13-c77dd08dd7b4",
+      "incident_id": "a34d6809-63f1-4d01-b5ff-9c3762a3c093",
+      "report_id": "partner-001",
+      "source": "partner",
+      "event_type": "reconciliation",
+      "input_data": {
+        "source": "partner",
+        "location": {
+          "lat": 23.0305,
+          "lng": 72.5805
+        },
+        "severity": "medium",
+        "responsible_party": "Partner-Agency",
+        "timestamp": "2026-08-16T17:40:00Z",
+        "description": "Routine maintenance ticket for pothole",
+        "metadata": {
+          "ticket_ref": "PART-9988"
+        },
+        "report_id": "partner-001",
+        "is_duplicate": false
+      },
+      "decision_logic": {
+        "severity": {
+          "previous": "high",
+          "incoming": "medium",
+          "selected": "high",
+          "reason": "Current severity is higher"
+        },
+        "responsible_party": {
+          "previous": "Contractor-A",
+          "incoming": "Partner-Agency",
+          "selected": "Contractor-A",
+          "selected_source": "mobile",
+          "reason": "Current source (mobile) has higher reliability"
+        },
+        "identity_resolution": {
+          "matched_report_id": "mobile-001",
+          "distance_meters": 54.04,
+          "time_difference_seconds": 2400.0,
+          "distance_threshold_meters": 500.0,
+          "time_threshold_seconds": 3600.0,
+          "confidence_level": "LOW",
+          "ambiguous": true
+        }
+      },
+      "resulting_state": {
+        "latitude": 23.0301,
+        "longitude": 72.5802,
+        "severity": "high",
+        "responsible_party": "Contractor-A",
+        "responsible_party_source": "mobile"
+      },
+      "created_at": "2026-08-16T17:40:00+00:00"
+    },
+    {
+      "id": "8b5167d1-6ab9-4808-86f0-5cef561ccf58",
+      "incident_id": "a34d6809-63f1-4d01-b5ff-9c3762a3c093",
       "report_id": "mobile-002",
       "source": "mobile",
       "event_type": "reconciliation",
       "input_data": {
-        "report_id": "mobile-002",
         "source": "mobile",
         "location": {
           "lat": 23.0302,
@@ -100,7 +169,10 @@
         "severity": "medium",
         "responsible_party": "Municipality",
         "timestamp": "2026-08-16T17:30:00Z",
-        "description": "Late arriving report for pothole"
+        "description": "Late arriving report for pothole",
+        "metadata": {},
+        "report_id": "mobile-002",
+        "is_duplicate": false
       },
       "decision_logic": {
         "severity": {
@@ -112,16 +184,25 @@
         "responsible_party": {
           "previous": "Contractor-A",
           "incoming": "Municipality",
-          "selected": "Municipality",
+          "selected": "Contractor-A",
           "selected_source": "mobile",
-          "reason": "Mobile source has higher reliability"
+          "reason": "Equal source reliability; retaining current responsible party"
+        },
+        "identity_resolution": {
+          "matched_report_id": "mobile-001",
+          "distance_meters": 15.11,
+          "time_difference_seconds": 1800.0,
+          "distance_threshold_meters": 500.0,
+          "time_threshold_seconds": 3600.0,
+          "confidence_level": "MEDIUM",
+          "ambiguous": false
         }
       },
       "resulting_state": {
         "latitude": 23.0301,
         "longitude": 72.5802,
         "severity": "high",
-        "responsible_party": "Municipality",
+        "responsible_party": "Contractor-A",
         "responsible_party_source": "mobile"
       },
       "created_at": "2026-08-16T17:30:00+00:00"

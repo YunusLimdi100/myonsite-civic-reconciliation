@@ -3,8 +3,6 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 from app.main import app
 from app.services import in_memory_db
-from app.identity import distance_meters, is_overlapping
-from app.reconciliation import reconcile_state
 
 client = TestClient(app)
 
@@ -46,20 +44,20 @@ def run_demo_and_generate_outputs():
     with open(demo_dir / "03_identity_merged.json", "w", encoding="utf-8") as f:
         json.dump(data3, f, indent=2)
 
-    # Severity Conflict demonstration snippet output
     severity_demo = {
         "report_id": rep3["report_id"],
         "previous_severity": "low",
         "incoming_severity": "high",
         "reconciled_severity": "high",
-        "decision": data3["decision"]["severity"]
+        "decision": data3["decision"]["severity"],
+        "identity_resolution": data3["decision"].get("identity_resolution")
     }
     print("04. Severity Conflict:", severity_demo)
     with open(demo_dir / "04_severity_conflict.json", "w", encoding="utf-8") as f:
         json.dump(severity_demo, f, indent=2)
 
     # --- 4. Responsible Party Conflict ---
-    rep4 = fixtures[3]  # partner-001 (partner agency, lower reliability than mobile)
+    rep4 = fixtures[3]  # partner-001
     res4 = client.post("/incidents", json=rep4)
     data4 = res4.json()
 
@@ -72,7 +70,8 @@ def run_demo_and_generate_outputs():
         "source": rep5["source"],
         "incoming_responsible_party": rep5["responsible_party"],
         "reconciled_responsible_party": "Municipality",
-        "decision": data5["decision"]["responsible_party"]
+        "decision": data5["decision"]["responsible_party"],
+        "identity_resolution": data5["decision"].get("identity_resolution")
     }
     print("05. Responsible Party Conflict:", party_demo)
     with open(demo_dir / "05_responsible_party_conflict.json", "w", encoding="utf-8") as f:
