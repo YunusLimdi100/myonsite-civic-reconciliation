@@ -1,0 +1,12 @@
+{
+  "report_id": "email-001",
+  "previous_severity": "low",
+  "incoming_severity": "high",
+  "reconciled_severity": "high",
+  "decision": {
+    "previous": "low",
+    "incoming": "high",
+    "selected": "high",
+    "reason": "Highest severity wins"
+  }
+}

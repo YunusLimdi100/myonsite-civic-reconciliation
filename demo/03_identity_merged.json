@@ -1,0 +1,21 @@
+{
+  "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+  "report_id": "email-001",
+  "status": "reconciled",
+  "version": 2,
+  "decision": {
+    "severity": {
+      "previous": "low",
+      "incoming": "high",
+      "selected": "high",
+      "reason": "Highest severity wins"
+    },
+    "responsible_party": {
+      "previous": "Contractor-A",
+      "incoming": "Contractor-B",
+      "selected": "Contractor-A",
+      "selected_source": "mobile",
+      "reason": "Current source (mobile) has higher reliability"
+    }
+  }
+}

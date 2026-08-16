@@ -1,0 +1,13 @@
+{
+  "report_id": "mobile-002",
+  "source": "mobile",
+  "incoming_responsible_party": "Municipality",
+  "reconciled_responsible_party": "Municipality",
+  "decision": {
+    "previous": "Contractor-A",
+    "incoming": "Municipality",
+    "selected": "Municipality",
+    "selected_source": "mobile",
+    "reason": "Mobile source has higher reliability"
+  }
+}

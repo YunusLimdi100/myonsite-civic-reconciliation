@@ -1,0 +1,130 @@
+{
+  "incident": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000001",
+    "current_version": 3,
+    "latitude": 23.0301,
+    "longitude": 72.5802,
+    "severity": "high",
+    "responsible_party": "Municipality",
+    "responsible_party_source": "mobile",
+    "created_at": "2026-08-16T17:00:00+00:00",
+    "updated_at": "2026-08-16T17:30:00+00:00"
+  },
+  "events": [
+    {
+      "id": "e1-001",
+      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "report_id": "mobile-001",
+      "source": "mobile",
+      "event_type": "incident_created",
+      "input_data": {
+        "report_id": "mobile-001",
+        "source": "mobile",
+        "location": {
+          "lat": 23.0301,
+          "lng": 72.5802
+        },
+        "severity": "low",
+        "responsible_party": "Contractor-A",
+        "timestamp": "2026-08-16T17:00:00Z",
+        "description": "Pothole reported on main road"
+      },
+      "decision_logic": {
+        "action": "new_incident_created",
+        "reason": "No overlapping incident report found within 500m / 1h window"
+      },
+      "resulting_state": {
+        "latitude": 23.0301,
+        "longitude": 72.5802,
+        "severity": "low",
+        "responsible_party": "Contractor-A",
+        "responsible_party_source": "mobile"
+      },
+      "created_at": "2026-08-16T17:00:00+00:00"
+    },
+    {
+      "id": "e1-002",
+      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "report_id": "email-001",
+      "source": "email",
+      "event_type": "reconciliation",
+      "input_data": {
+        "report_id": "email-001",
+        "source": "email",
+        "location": {
+          "lat": 23.0315,
+          "lng": 72.5810
+        },
+        "severity": "high",
+        "responsible_party": "Contractor-B",
+        "timestamp": "2026-08-16T17:20:00Z",
+        "description": "Severe pothole causing traffic obstruction"
+      },
+      "decision_logic": {
+        "severity": {
+          "previous": "low",
+          "incoming": "high",
+          "selected": "high",
+          "reason": "Highest severity wins"
+        },
+        "responsible_party": {
+          "previous": "Contractor-A",
+          "incoming": "Contractor-B",
+          "selected": "Contractor-A",
+          "selected_source": "mobile",
+          "reason": "Current source (mobile) has higher reliability"
+        }
+      },
+      "resulting_state": {
+        "latitude": 23.0301,
+        "longitude": 72.5802,
+        "severity": "high",
+        "responsible_party": "Contractor-A",
+        "responsible_party_source": "mobile"
+      },
+      "created_at": "2026-08-16T17:20:00+00:00"
+    },
+    {
+      "id": "e1-003",
+      "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+      "report_id": "mobile-002",
+      "source": "mobile",
+      "event_type": "reconciliation",
+      "input_data": {
+        "report_id": "mobile-002",
+        "source": "mobile",
+        "location": {
+          "lat": 23.0302,
+          "lng": 72.5803
+        },
+        "severity": "medium",
+        "responsible_party": "Municipality",
+        "timestamp": "2026-08-16T17:30:00Z",
+        "description": "Late arriving report for pothole"
+      },
+      "decision_logic": {
+        "severity": {
+          "previous": "high",
+          "incoming": "medium",
+          "selected": "high",
+          "reason": "Current severity is higher"
+        },
+        "responsible_party": {
+          "previous": "Contractor-A",
+          "incoming": "Municipality",
+          "selected": "Municipality",
+          "selected_source": "mobile",
+          "reason": "Mobile source has higher reliability"
+        }
+      },
+      "resulting_state": {
+        "latitude": 23.0301,
+        "longitude": 72.5802,
+        "severity": "high",
+        "responsible_party": "Municipality",
+        "responsible_party_source": "mobile"
+      },
+      "created_at": "2026-08-16T17:30:00+00:00"
+    }
+  ]
+}

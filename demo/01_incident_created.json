@@ -1,0 +1,7 @@
+{
+  "incident_id": "a1b2c3d4-0000-4000-8000-000000000001",
+  "report_id": "mobile-001",
+  "status": "created",
+  "version": 1,
+  "decision": "new_incident_created"
+}
