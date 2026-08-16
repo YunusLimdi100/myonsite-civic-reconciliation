@@ -10,9 +10,10 @@ Civic reporting systems ingest incident reports from multiple untrusted sources 
 
 This system provides:
 1. **Real-time Identity Resolution**: Automatically merges overlapping reports into unified incidents using Haversine distance ($\le 500\text{ meters}$) and time window matching ($\le 1\text{ hour}$).
-2. **Deterministic State Reconciliation**: Resolves conflicts using strict rule hierarchies (Severity: `high > medium > low`, Source Reliability: `mobile > email > partner`).
-3. **Append-Only History & Versioning**: Preserves all raw inputs, maintains immutable version states, and exposes a detailed decision audit trail.
-4. **Isolated Replay Engine**: Replays historical report sequences in exact arrival order in-memory without polluting production database records.
+2. **Deterministic Confidence & Ambiguity Classification**: Evaluates identity overlaps into `HIGH`, `MEDIUM`, or `LOW/AMBIGUOUS` confidence levels with detailed distance/time evidence in audit traces.
+3. **Deterministic State Reconciliation**: Resolves state conflicts using strict rule hierarchies (Severity: `high > medium > low`, Source Reliability: `mobile > email > partner`).
+4. **Append-Only History & Versioning**: Preserves all raw inputs, maintains immutable version states, and exposes a detailed decision audit trail.
+5. **Isolated Replay Engine**: Replays historical report sequences in exact arrival order in-memory without polluting production database records.
 
 ---
 
@@ -51,19 +52,44 @@ Input Validation (Pydantic models - HTTP 400 on error)
 Duplicate Detection (Unique constraint on (source, report_id))
        ↓
 Identity Resolution (Distance <= 500m AND time diff <= 1h vs associated reports)
-  ├── Match Found  → Execute State Reconciliation
+  ├── Match Found  → Compute Confidence (HIGH/MEDIUM/LOW) & Execute State Reconciliation
   └── No Match     → Create New Incident (Version 1)
        ↓
 Reconciliation Engine (Severity rank & Source reliability priority)
        ↓
 Database Operations (Update incidents, append incident_reports, incident_versions, incident_events)
        ↓
-API Response (Version, status, decision trace)
+API Response (Version, status, decision trace with identity_resolution evidence)
 ```
 
 ---
 
-## 5. Reconciliation Rules
+## 5. Reconciliation & Identity Resolution Rules
+
+### Identity Resolution Rule
+Two reports belong to the same incident iff:
+$$\text{distance}(\text{report}, \text{existing\_report}) \le 500\text{ meters}$$
+$$\text{and } |\text{timestamp}_{\text{report}} - \text{timestamp}_{\text{existing\_report}}| \le 3600\text{ seconds}$$
+
+### Deterministic Confidence Classification
+When an identity overlap is matched ($\le 500\text{m}$ and $\le 1\text{h}$), the system calculates a deterministic confidence classification and ambiguity flag:
+- **HIGH Confidence**: $\text{distance} \le 100.0\text{ meters}$ AND $\text{time difference} \le 15\text{ minutes } (900.0\text{s})$ (`ambiguous = false`)
+- **MEDIUM Confidence**: $\text{distance} \le 300.0\text{ meters}$ AND $\text{time difference} \le 30\text{ minutes } (1800.0\text{s})$ (`ambiguous = false`)
+- **LOW / AMBIGUOUS**: Otherwise within the $500\text{m} / 1\text{h}$ boundary (`ambiguous = true`)
+
+### Identity Resolution Evidence in Audit Logs
+Every reconciliation decision embeds an `identity_resolution` metadata block into the audit trail:
+```json
+"identity_resolution": {
+  "matched_report_id": "mobile-001",
+  "distance_meters": 169.58,
+  "time_difference_seconds": 1200.0,
+  "distance_threshold_meters": 500.0,
+  "time_threshold_seconds": 3600.0,
+  "confidence_level": "MEDIUM",
+  "ambiguous": false
+}
+```
 
 ### Severity Hierarchy
 ```text
@@ -80,11 +106,6 @@ mobile (reliability 3) > email (reliability 2) > partner (reliability 1)
 - If reliability is equal, current party is retained as tie-breaker.
 - Decision rationale logged: `"Mobile source has higher reliability"`.
 
-### Identity Resolution Rule
-Two reports belong to the same incident iff:
-$$\text{distance}(\text{report}, \text{existing\_report}) \le 500\text{ meters}$$
-$$\text{and } |\text{timestamp}_{\text{report}} - \text{timestamp}_{\text{existing\_report}}| \le 3600\text{ seconds}$$
-
 ---
 
 ## 6. Database Schema (`sql/schema.sql`)
@@ -96,95 +117,30 @@ $$\text{and } |\text{timestamp}_{\text{report}} - \text{timestamp}_{\text{existi
 
 ---
 
-## 7. Setup & Run Instructions
+## 7. How to Run, Test & Query the Application
 
-### Prerequisites
-- Python 3.10+
-- Git
+Detailed installation, execution, testing, and API curl instructions have been moved to [**RUNNING.md**](RUNNING.md).
 
-### Installation
+Quick summary:
 ```bash
-git clone https://github.com/your-org/civic_reconciliation.git
-cd civic_reconciliation
-
-# Create virtual environment
-python -m venv venv
-# Activate on Windows:
-venv\Scripts\activate
-# Activate on Linux/macOS:
-source venv/bin/activate
-
 # Install dependencies
 pip install -r requirements.txt
-```
 
-### Environment Configuration
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-Populate Supabase credentials:
-```env
-SUPABASE_URL=https://your-supabase-project.supabase.co
-SUPABASE_KEY=your-supabase-anon-key
-```
-
-### Apply SQL Schema
-Execute `sql/schema.sql` in the Supabase SQL Editor.
-
-### Run Server
-```bash
+# Run server (Interactive API docs at http://localhost:8000/docs)
 uvicorn app.main:app --reload
-```
-API docs available at `http://localhost:8000/docs`.
 
-### Run Test Suite
-```bash
-pytest -v
+# Run 21 automated pytest tests
+python -m pytest -v
+
+# Run demo output generator
+python generate_demo.py
 ```
+
+For full setup details, environment configuration options, and copy-pasteable curl examples, see [**RUNNING.md**](RUNNING.md).
 
 ---
 
-## 8. API Reference & Curl Examples
-
-### 1. Ingest Report
-`POST /incidents`
-
-```bash
-curl -X POST "http://localhost:8000/incidents" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "source": "mobile",
-       "location": { "lat": 23.0301, "lng": 72.5802 },
-       "severity": "medium",
-       "responsible_party": "Municipality",
-       "timestamp": "2026-08-16T17:00:00Z",
-       "description": "Large pothole on main road",
-       "report_id": "mobile-001"
-     }'
-```
-
-### 2. Retrieve Incident Audit Trail
-`GET /incidents/{id}/audit`
-
-```bash
-curl "http://localhost:8000/incidents/a1b2c3d4-0000-4000-8000-000000000001/audit"
-```
-
-### 3. Replay Historical Sequence
-`POST /incidents/replay`
-
-```bash
-curl -X POST "http://localhost:8000/incidents/replay" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "reports": [ ... array of reports in arrival order ... ]
-     }'
-```
-
----
-
-## 9. Tested Edge Cases
+## 8. Tested Edge Cases (21 Automated Tests)
 
 1. **Duplicate Report**: Same `(source, report_id)` returning duplicate response without state transition.
 2. **Identity Merge Across Sources**: Reports within 500m and 1h window assigned same incident ID.
@@ -196,10 +152,18 @@ curl -X POST "http://localhost:8000/incidents/replay" \
 8. **Missing Metadata**: Optional metadata field omitted processes cleanly.
 9. **Repeated Ingestion**: Repeated posts yield status `"duplicate"` deterministically.
 10. **Deterministic Replay Equality**: In-memory replay produces identical final state, version sequence, and decision trace as live ingestion.
+11. **Confidence Level Boundaries**:
+    - `100.0m + 900.0s` $\rightarrow$ `HIGH` (`ambiguous = false`)
+    - `300.0m + 1800.0s` $\rightarrow$ `MEDIUM` (`ambiguous = false`)
+    - `500.0m + 3600.0s` $\rightarrow$ `LOW` (`ambiguous = true`)
+    - `100.01m + 900.0s` $\rightarrow$ `MEDIUM` (`ambiguous = false`)
+    - `300.01m + 1800.0s` $\rightarrow$ `LOW` (`ambiguous = true`)
+    - `500.01m` $\rightarrow$ No identity match
+    - `3600.01s` $\rightarrow$ No identity match
 
 ---
 
-## 10. Demo Directory
+## 9. Repository Layout & Demo Directory
 
 Representative JSON output files are available in `demo/`:
 - `demo/01_incident_created.json`
@@ -210,7 +174,7 @@ Representative JSON output files are available in `demo/`:
 - `demo/06_audit_trail.json`
 - `demo/07_replay_result.json`
 
-```
+```text
 civic_reconciliation
 ├─ app
 │  ├─ database.py
@@ -231,6 +195,7 @@ civic_reconciliation
 │  └─ 07_replay_result.json
 ├─ generate_demo.py
 ├─ README.md
+├─ RUNNING.md
 ├─ requirements.txt
 ├─ sql
 │  └─ schema.sql
@@ -242,5 +207,4 @@ civic_reconciliation
    ├─ test_reconciliation.py
    ├─ test_replay.py
    └─ __init__.py
-
 ```
